@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 class Sequence:
     def __init__(self, sequence: str, identifier: str = None):
         self.identifier = identifier or "Unnamed"
@@ -7,7 +8,6 @@ class Sequence:
 
         if not self._is_valid():
             raise ValueError("Invalid characters in sequence!")
-    
 
     def _detect_type(self):
         """
@@ -56,16 +56,16 @@ class Sequence:
             else:
                 raise ValueError(f"Unknown nucleotide: {nucleotide}")
         
-        return dict(count)
-    
-    def gc_content(self):
-        pass
-    
+        return dict(count)  
+ 
     def dna_to_rna(self):
         """
         Function: Transcribes DNA to RNA
         Returns: RNA Sequence 
         """
+        if self.seq_type != "DNA":
+            raise ValueError("Input sequence must be DNA.")
+        
         rna_dict = {
             "a":"A",
             "c":"C",
@@ -78,15 +78,150 @@ class Sequence:
         rna_upper = rna.upper()
         return(rna_upper)
 
-
     def rna_to_dna(self):
-        pass
+        """
+        Function: Transcribes RNA to cDNA
+        Returns: cDNA sequence 
+        """
+        if self.seq_type != "RNA":
+            raise ValueError("Input sequence must be RNA.")
+        
+        dna_dict = {
+            "a":"A",
+            "c":"C",
+            "u":"T",
+            "g":"G"
+        }
+        sequence_lower = self.sequence.lower()
+        dna_table = str.maketrans(dna_dict)
+        dna = sequence_lower.translate(dna_table)
+        dna_upper = dna.upper()
+        return(dna_upper)
+    
+    def rev_complement(self):
+        """
+        Function: Generates the reverse complement of the sequence
+        Returns: Reverse complement
+        """
+        if self.seq_type != "DNA":
+            raise ValueError("Input sequence must be DNA.")
+        
+        complement_dict = {
+            "a":"T",
+            "c":"G",
+            "t":"A",
+            "g":"C"
+        }
+        sequence_lower = self.sequence.lower()
+        complement_table = str.maketrans(complement_dict)
+        complement = sequence_lower.translate(complement_table)
+        rev_complement = complement[::-1]
+        return(rev_complement)  
+
+    def gc_content(self):
+        """
+        Function: Computes GC content. Only considers G and C nucleotides. 
+          Ambiguous nucleotides not included in GC content, but are included in the length of the sequence. 
+          Ambiguous nucleotides: Y, S, K, M, B, D, H, V, N
+        Returns: GC content of the sequence as a percentage.
+        """
+        counts = {
+        "C" : 0,
+        "G" : 0
+        }
+        for nucleotide in self.sequence:
+            if nucleotide == "C":
+                counts["C"] = counts["C"] +1
+            elif nucleotide == "G":
+                counts["G"] = counts["G"] +1
+            else:
+                pass
+        
+        gc_content = (counts["G"] + counts["C"]) / len(self.sequence) * 100
+        return(gc_content)
     
     def rna_to_protein(self):
-        pass
-    
-    def complement(self):
-        pass
-    
-
+        if self.seq_type != "RNA":
+            raise ValueError("Input sequence must be RNA.")
         
+        codon_dict = {
+            "UUU":"F",
+            "CUU":"L",
+            "AUU":"I",
+            "GUU":"V",
+            "UUC":"F",
+            "CUC":"L",
+            "AUC":"I",
+            "GUC":"V",
+            "UUA":"L",
+            "CUA":"L",
+            "AUA":"I",
+            "GUA":"V",
+            "UUG":"L",
+            "CUG":"L",
+            "AUG":"M",
+            "GUG":"V",
+            "UCU":"S",
+            "CCU":"P",
+            "ACU":"T",
+            "GCU":"A",
+            "UCC":"S",
+            "CCC":"P",
+            "ACC":"T",
+            "GCC":"A",
+            "UCA":"S",
+            "CCA":"P",
+            "ACA":"T",
+            "GCA":"A",
+            "UCG":"S",
+            "CCG":"P",
+            "ACG":"T",
+            "GCG":"A",
+            "UAU":"Y",
+            "CAU":"H",
+            "AAU":"N",
+            "GAU":"D",
+            "UAC":"Y",      
+            "CAC":"H",      
+            "AAC":"N",      
+            "GAC":"D",
+            "UAA":"Stop",
+            "CAA":"Q",
+            "AAA":"K",
+            "GAA":"E",
+            "UAG":"Stop",
+            "CAG":"Q",
+            "AAG":"K",
+            "GAG":"E",
+            "UGU":"C",
+            "CGU":"R",
+            "AGU":"S",
+            "GGU":"G",
+            "UGC":"C",
+            "CGC":"R",
+            "AGC":"S",
+            "GGC":"G",
+            "UGA":"Stop",   
+            "CGA":"R",
+            "AGA":"R",      
+            "GGA":"G",
+            "UGG":"W",      
+            "CGG":"R",      
+            "AGG":"R",
+            "GGG":"G"
+            }
+
+        protein = ""
+        for i in range(0, len(self.sequence), 3):
+            codon = self.sequence[i:i+3]
+            aa = codon_dict.get(codon, '')
+            if aa == "Stop":
+                # protein += aa
+                break
+            else:
+                protein += aa
+        return(protein)
+        
+       
+
+            
