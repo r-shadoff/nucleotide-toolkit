@@ -62,7 +62,22 @@ class Sequence:
         pass
     
     def dna_to_rna(self):
-        pass
+        """
+        Function: Transcribes DNA to RNA
+        Returns: RNA Sequence 
+        """
+        rna_dict = {
+            "a":"A",
+            "c":"C",
+            "t":"U",
+            "g":"G"
+        }
+        sequence_lower = self.sequence.lower()
+        rna_table = str.maketrans(rna_dict)
+        rna = sequence_lower.translate(rna_table)
+        rna_upper = rna.upper()
+        return(rna_upper)
+
     
     def rna_to_dna(self):
         pass
