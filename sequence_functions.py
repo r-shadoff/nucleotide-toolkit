@@ -1,3 +1,4 @@
+from collections import defaultdict
 class Sequence:
     def __init__(self, sequence: str, identifier: str = None):
         self.identifier = identifier or "Unnamed"
@@ -6,8 +7,13 @@ class Sequence:
 
         if not self._is_valid():
             raise ValueError("Invalid characters in sequence!")
-        
+    
+    #TO DO: Add protein sequence type
     def _detect_type(self):
+        """
+        Function: Assigns sequence type based on nucleotides in sequence.
+        Returns: DNA or RNA as seq_type.
+        """
         if "U" in self.sequence and "T" in self.sequence:
             raise ValueError("Mixed T and U bases in sequence!")
         elif "T" in self.sequence:
@@ -15,11 +21,15 @@ class Sequence:
         elif "U" in self.sequence:
             return "RNA"
         else:
-            raise ValueError("Sequence type unable to be determined.")
-        
+            raise ValueError("Sequence type unable to be determined.")  
+    
     def _is_valid(self):
-        valid_dna = set("ACGT")
-        valid_rna = set("ACGU")
+        """
+        Function: Checks if the input sequence is valid.
+        Returns: Boolean
+        """
+        valid_dna = set("ACGTRYSWKMBDHVN-")
+        valid_rna = set("ACGURYSWKMBDHVN-")
         if self.seq_type == "DNA":
             return set(self.sequence).issubset(valid_dna)
         elif self.seq_type == "RNA":
@@ -28,7 +38,25 @@ class Sequence:
             return False
     
     def count_nucleotides(self):
-        pass
+        """ 
+        Function: Counts the number of times IUPAC nucleotides appear in a DNA sequence
+        Returns: a dictionary of nucleotide counts 
+        """
+        if self.seq_type == "DNA":
+            iupac = list("ACGTYRWSKMBDHVN-")
+        elif self.seq_type == "RNA":
+            iupac = list("ACGUYRWSKMBDHVN-")
+        else:
+            print("Unsupported sequence type for this function.")
+    
+        count = defaultdict(int)
+        for nucleotide in self.sequence:
+            if nucleotide in iupac:
+                count[nucleotide] += 1
+            else:
+                raise ValueError(f"Unknown nucleotide: {nucleotide}")
+        
+        return dict(count)
     
     def gc_content(self):
         pass
