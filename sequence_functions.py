@@ -3,12 +3,12 @@ class Sequence:
     def __init__(self, sequence: str, identifier: str = None):
         self.identifier = identifier or "Unnamed"
         self.sequence = sequence.upper()
-        self.seq_type = self._detect_type()
+        self.seq_type =  self._detect_type()
 
         if not self._is_valid():
             raise ValueError("Invalid characters in sequence!")
     
-    #TO DO: Add protein sequence type
+
     def _detect_type(self):
         """
         Function: Assigns sequence type based on nucleotides in sequence.
@@ -78,7 +78,7 @@ class Sequence:
         rna_upper = rna.upper()
         return(rna_upper)
 
-    
+
     def rna_to_dna(self):
         pass
     
