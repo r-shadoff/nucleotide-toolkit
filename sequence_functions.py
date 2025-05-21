@@ -143,6 +143,7 @@ class Sequence:
     def rna_to_protein(self):
         if self.seq_type != "RNA":
             raise ValueError("Input sequence must be RNA.")
+            return None
         
         codon_dict = {
             "UUU":"F",
@@ -221,7 +222,20 @@ class Sequence:
             else:
                 protein += aa
         return(protein)
-        
-       
+
+    def count_snps(self, other):
+        len1 = len(self.sequence)
+        len2 = len(other.sequence)
+        snps = 0
+        if len1 == len2:
+            for a, b in zip(self.sequence, other.sequence): 
+                if a != b:
+                    snps += 1
+        else:
+            print(f"Sequences must be the same length! Sequence 1 length: {len1} Sequence 2 length: {len2}")
+            return None
+
+        print(snps)
+        return snps
 
             
