@@ -235,7 +235,18 @@ class Sequence:
             print(f"Sequences must be the same length! Sequence 1 length: {len1} Sequence 2 length: {len2}")
             return None
 
-        print(snps)
         return snps
 
-            
+    def find_motif(self, motif):
+        match_positions = []
+        start = 0
+
+        while start <= len(self.sequence) - len(motif):
+            index = self.sequence.find(motif, start)
+            if index == -1: # indicates no match
+                break
+            match_positions.append(index + 1) 
+            start = index + 1  
+
+        return match_positions
+                
