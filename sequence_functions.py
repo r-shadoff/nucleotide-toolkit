@@ -98,7 +98,7 @@ class Sequence:
         dna_upper = dna.upper()
         return(dna_upper)
     
-    def rev_complement(self):
+    def rev_complement(self, sequence):
         """
         Function: Generates the reverse complement of the sequence
         Returns: Reverse complement
@@ -107,14 +107,13 @@ class Sequence:
             raise ValueError("Input sequence must be DNA.")
         
         complement_dict = {
-            "a":"T",
-            "c":"G",
-            "t":"A",
-            "g":"C"
+            "A":"T",
+            "C":"G",
+            "T":"A",
+            "G":"C"
         }
-        sequence_lower = self.sequence.lower()
-        complement_table = str.maketrans(complement_dict)
-        complement = sequence_lower.translate(complement_table)
+
+        complement = ''.join(complement_dict.get(base, base) for base in sequence)
         rev_complement = complement[::-1]
         return(rev_complement)  
 
@@ -250,3 +249,23 @@ class Sequence:
 
         return match_positions
                 
+    def restriction_sites(self):
+        """
+        Function: Locates substrings within the sequence and evaluates if the substrings constitute restriction enzyme sites
+        (Restriction enzymes cut at sites that are reverse palindromes by binding the enzyme homodimer to the parent and complement strand)
+        Returns: List of the position and length of each potential restriction site
+        """        
+        sites = [] # tuple of starting position and length for each site
+        
+        for number in range(4,13,1):
+            for start_pos in range(len(self.sequence) - number +1):
+                subseq = self.sequence[start_pos:start_pos + number]
+                print(f"Subseq: {subseq}")
+                rev_comp = self.rev_complement(subseq)
+                print(f"Rev Comp: {rev_comp}")
+               
+                if subseq == rev_comp:
+                    sites.append((start_pos, number))
+                
+        print(sites)
+        return sites
