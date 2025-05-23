@@ -106,6 +106,7 @@ class Sequence:
         if self.seq_type != "DNA":
             raise ValueError("Input sequence must be DNA.")
         
+
         complement_dict = {
             "A":"T",
             "C":"G",
@@ -113,7 +114,7 @@ class Sequence:
             "G":"C"
         }
 
-        complement = ''.join(complement_dict.get(base, base) for base in sequence)
+        complement = sequence.upper().translate(str.maketrans(complement_dict))
         rev_complement = complement[::-1]
         return(rev_complement)  
 
@@ -260,12 +261,10 @@ class Sequence:
         for number in range(4,13,1):
             for start_pos in range(len(self.sequence) - number +1):
                 subseq = self.sequence[start_pos:start_pos + number]
-                print(f"Subseq: {subseq}")
                 rev_comp = self.rev_complement(subseq)
-                print(f"Rev Comp: {rev_comp}")
-               
                 if subseq == rev_comp:
-                    sites.append((start_pos, number))
+                    sites.append((start_pos+1, number))
                 
-        print(sites)
+        for start,length in sites:
+            print(start, length)
         return sites
